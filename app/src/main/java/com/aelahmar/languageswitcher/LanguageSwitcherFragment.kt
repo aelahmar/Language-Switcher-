@@ -12,7 +12,7 @@ import java.io.Serializable
 
 class LanguageSwitcherFragment : Fragment() {
 
-    private val mPreferenceUtil: PreferenceUtil = PreferenceUtil(requireContext())
+    private lateinit var mPreferenceUtil: PreferenceUtil
 
     private lateinit var languagesList: MutableList<Language>
 
@@ -41,6 +41,8 @@ class LanguageSwitcherFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        mPreferenceUtil = PreferenceUtil(requireContext())
 
         arguments?.let {
             if (it.containsKey(LANGUAGES_KEY))
