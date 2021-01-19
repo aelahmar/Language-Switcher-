@@ -49,8 +49,8 @@ class LanguageSwitcherFragment : Fragment() {
                 languagesList = it.getSerializable(LANGUAGES_KEY) as MutableList<Language>
         }
 
-        if (languagesList.isEmpty()) {
-            throw IllegalArgumentException("LanguageSwitcher require not empty Languages List")
+        if (languagesList.isEmpty() || languagesList.size > 2) {
+            throw IllegalArgumentException("LanguageSwitcher require not empty Languages List and support only 2 languages now :'( ")
         }
 
         initUi()
@@ -72,11 +72,24 @@ class LanguageSwitcherFragment : Fragment() {
         }
 
         binding.selectedLanguageIcon.setOnClickListener {
+            val index = languagesList.indexOf(language)
+            selectedLanguage = if (index == 0) {
+                languagesList[index + 1].stringLanguageCode
+            } else {
+                languagesList[index - 1].stringLanguageCode
+            }
 
+            restartActivity()
         }
     }
 
-    var selectedLanguage: String
+    private fun restartActivity() {
+        val intent = activity?.intent
+        activity?.startActivity(intent)
+        activity?.finish()
+    }
+
+    private var selectedLanguage: String
         get() = mPreferenceUtil.getStringValue(
             SELECTED_LANGUAGE_KEY,
             languagesList[0].stringLanguageCode
