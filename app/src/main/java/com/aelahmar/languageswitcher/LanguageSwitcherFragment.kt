@@ -14,7 +14,6 @@ class LanguageSwitcherFragment : Fragment() {
 
     private val mPreferenceUtil: PreferenceUtil = PreferenceUtil(requireContext())
 
-    // TODO: 1/18/21 make it public to support more than 2 languages
     private lateinit var languagesList: MutableList<Language>
 
     private var _binding: FragmentLanguageSwitcherBinding? = null
