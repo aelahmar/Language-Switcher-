@@ -14,7 +14,7 @@ class LanguageSwitcherFragment : Fragment() {
 
     private lateinit var mPreferenceUtil: PreferenceUtil
 
-    private lateinit var languagesList: MutableList<Language>
+    private var languagesList: MutableList<Language> = mutableListOf()
 
     private var _binding: FragmentLanguageSwitcherBinding? = null
     private val binding get() = _binding!!
@@ -24,7 +24,6 @@ class LanguageSwitcherFragment : Fragment() {
         private const val LANGUAGES_KEY = "LanguagesKey"
 
         fun initArEnLanguageSwitcher(languages: MutableList<Language>) = LanguageSwitcherFragment().apply {
-
             arguments?.apply {
                 putSerializable(LANGUAGES_KEY, languages as Serializable)
             }
