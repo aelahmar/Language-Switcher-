@@ -23,15 +23,16 @@ class LanguageSwitcherFragment : Fragment() {
         const val SELECTED_LANGUAGE_KEY = "UserLanguageKey"
         private const val LANGUAGES_KEY = "LanguagesKey"
 
-        fun initArEnLanguageSwitcher(languages: MutableList<Language>) = LanguageSwitcherFragment().apply {
-            arguments?.apply {
-                putSerializable(LANGUAGES_KEY, languages as Serializable)
+        fun initArEnLanguageSwitcher(languages: MutableList<Language>) =
+            LanguageSwitcherFragment().apply {
+                val bundle = Bundle()
+                bundle.putSerializable(LANGUAGES_KEY, languages as Serializable)
+                arguments = bundle
             }
-        }
     }
 
     override fun onCreateView(
-            inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         inflater.inflate(R.layout.fragment_language_switcher, container, false)
         _binding = FragmentLanguageSwitcherBinding.inflate(inflater, container, false)
@@ -77,14 +78,14 @@ class LanguageSwitcherFragment : Fragment() {
 
     var selectedLanguage: String
         get() = mPreferenceUtil.getStringValue(
-                SELECTED_LANGUAGE_KEY,
-                languagesList[0].stringLanguageCode
+            SELECTED_LANGUAGE_KEY,
+            languagesList[0].stringLanguageCode
         )
         set(language) = mPreferenceUtil.setStringValue(SELECTED_LANGUAGE_KEY, language)
 
     data class Language(
-            @StringRes val stringRes: Int? = null,
-            @DrawableRes val drawableRes: Int? = null,
-            val stringLanguageCode: String
+        @StringRes val stringRes: Int? = null,
+        @DrawableRes val drawableRes: Int? = null,
+        val stringLanguageCode: String
     ) : Serializable
 }
