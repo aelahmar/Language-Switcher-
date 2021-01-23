@@ -1,5 +1,6 @@
 package com.aelahmar.languageswitcher
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,10 +14,6 @@ import java.io.Serializable
 
 class LanguageSwitcherFragment : Fragment() {
 
-    private lateinit var mPreferenceUtil: PreferenceUtil
-
-    private var languagesList: MutableList<Language> = mutableListOf()
-
     private var _binding: FragmentLanguageSwitcherBinding? = null
     private val binding get() = _binding!!
 
@@ -24,12 +21,20 @@ class LanguageSwitcherFragment : Fragment() {
         private const val SELECTED_LANGUAGE_KEY = "UserLanguageKey"
         private const val LANGUAGES_KEY = "LanguagesKey"
 
+        private var languagesList: MutableList<Language> = mutableListOf()
+
         fun initArEnLanguageSwitcher(languages: MutableList<Language>) =
                 LanguageSwitcherFragment().apply {
                     val bundle = Bundle()
                     bundle.putSerializable(LANGUAGES_KEY, languages as Serializable)
                     arguments = bundle
                 }
+
+        fun getSelectedLanguage(context: Context): String {
+            PreferenceUtil(context).apply {
+                return getStringValue(SELECTED_LANGUAGE_KEY, languagesList[0].stringLanguageCode)
+            }
+        }
     }
 
     override fun onCreateView(
@@ -42,8 +47,6 @@ class LanguageSwitcherFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        mPreferenceUtil = PreferenceUtil(requireContext())
 
         arguments?.let {
             if (it.containsKey(LANGUAGES_KEY))
@@ -58,7 +61,7 @@ class LanguageSwitcherFragment : Fragment() {
     }
 
     private fun initUi() {
-        val language = languagesList.first { it.stringLanguageCode == selectedLanguage }
+        val language = languagesList.first { it.stringLanguageCode == getSelectedLanguage(requireContext()) }
 
         language.drawableRes?.let {
             binding.selectedLanguageIcon.setImageResource(language.drawableRes)
@@ -91,11 +94,13 @@ class LanguageSwitcherFragment : Fragment() {
 
         builder.setPositiveButton(getString(R.string.yes)) { p0, p1 ->
             val index = languagesList.indexOf(language)
-            selectedLanguage = if (index == 0) {
+            val selectedLanguage = if (index == 0) {
                 languagesList[index + 1].stringLanguageCode
             } else {
                 languagesList[index - 1].stringLanguageCode
             }
+
+            setSelectedLanguage(requireContext(), selectedLanguage)
 
             restartActivity()
         }
@@ -106,12 +111,11 @@ class LanguageSwitcherFragment : Fragment() {
         dialog.show()
     }
 
-    var selectedLanguage: String
-        get() = mPreferenceUtil.getStringValue(
-                SELECTED_LANGUAGE_KEY,
-                languagesList[0].stringLanguageCode
-        )
-        set(language) = mPreferenceUtil.setStringValue(SELECTED_LANGUAGE_KEY, language)
+    private fun setSelectedLanguage(context: Context, language: String) {
+        PreferenceUtil(context).apply {
+            setStringValue(SELECTED_LANGUAGE_KEY, language)
+        }
+    }
 
     data class Language(
             @StringRes val stringRes: Int? = null,

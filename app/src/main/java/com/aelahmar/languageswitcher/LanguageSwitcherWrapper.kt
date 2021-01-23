@@ -9,12 +9,7 @@ import java.util.*
 class LanguageSwitcherWrapper(base: Context?) : ContextWrapper(base) {
     companion object {
         fun wrap(context: Context): ContextWrapper {
-            val mPreferenceUtil = PreferenceUtil(context)
-
-            val language = mPreferenceUtil.getStringValue(
-                    LanguageSwitcherFragment.SELECTED_LANGUAGE_KEY,
-                    "ar"
-            )
+            val language = LanguageSwitcherFragment.getSelectedLanguage(context)
 
             val locale = Locale(language)
             Locale.setDefault(locale)
