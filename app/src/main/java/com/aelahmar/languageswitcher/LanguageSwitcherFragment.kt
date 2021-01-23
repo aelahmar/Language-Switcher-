@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import com.aelahmar.languageswitcher.databinding.FragmentLanguageSwitcherBinding
 import java.io.Serializable
@@ -20,19 +21,19 @@ class LanguageSwitcherFragment : Fragment() {
     private val binding get() = _binding!!
 
     companion object {
-        const val SELECTED_LANGUAGE_KEY = "UserLanguageKey"
+        private const val SELECTED_LANGUAGE_KEY = "UserLanguageKey"
         private const val LANGUAGES_KEY = "LanguagesKey"
 
         fun initArEnLanguageSwitcher(languages: MutableList<Language>) =
-            LanguageSwitcherFragment().apply {
-                val bundle = Bundle()
-                bundle.putSerializable(LANGUAGES_KEY, languages as Serializable)
-                arguments = bundle
-            }
+                LanguageSwitcherFragment().apply {
+                    val bundle = Bundle()
+                    bundle.putSerializable(LANGUAGES_KEY, languages as Serializable)
+                    arguments = bundle
+                }
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+            inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         inflater.inflate(R.layout.fragment_language_switcher, container, false)
         _binding = FragmentLanguageSwitcherBinding.inflate(inflater, container, false)
@@ -72,14 +73,7 @@ class LanguageSwitcherFragment : Fragment() {
         }
 
         binding.selectedLanguageIcon.setOnClickListener {
-            val index = languagesList.indexOf(language)
-            selectedLanguage = if (index == 0) {
-                languagesList[index + 1].stringLanguageCode
-            } else {
-                languagesList[index - 1].stringLanguageCode
-            }
-
-            restartActivity()
+            showAlertDialogButtonClicked(language)
         }
     }
 
@@ -89,16 +83,39 @@ class LanguageSwitcherFragment : Fragment() {
         activity?.finish()
     }
 
-    private var selectedLanguage: String
+    private fun showAlertDialogButtonClicked(language: Language) {
+
+        val builder: AlertDialog.Builder = AlertDialog.Builder(requireContext())
+        builder.setTitle(getString(R.string.change_app_langugae))
+        builder.setMessage(getString(R.string.change_langugae_content))
+
+        builder.setPositiveButton(getString(R.string.yes)) { p0, p1 ->
+            val index = languagesList.indexOf(language)
+            selectedLanguage = if (index == 0) {
+                languagesList[index + 1].stringLanguageCode
+            } else {
+                languagesList[index - 1].stringLanguageCode
+            }
+
+            restartActivity()
+        }
+
+        builder.setNegativeButton(getString(R.string.cancel), null)
+
+        val dialog: AlertDialog = builder.create()
+        dialog.show()
+    }
+
+    var selectedLanguage: String
         get() = mPreferenceUtil.getStringValue(
-            SELECTED_LANGUAGE_KEY,
-            languagesList[0].stringLanguageCode
+                SELECTED_LANGUAGE_KEY,
+                languagesList[0].stringLanguageCode
         )
         set(language) = mPreferenceUtil.setStringValue(SELECTED_LANGUAGE_KEY, language)
 
     data class Language(
-        @StringRes val stringRes: Int? = null,
-        @DrawableRes val drawableRes: Int? = null,
-        val stringLanguageCode: String
+            @StringRes val stringRes: Int? = null,
+            @DrawableRes val drawableRes: Int? = null,
+            val stringLanguageCode: String
     ) : Serializable
 }

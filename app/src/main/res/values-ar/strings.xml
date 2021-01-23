@@ -1,5 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Language Switcher</string>
     <string name="change_app_langugae">Change App Language</string>
     <string name="change_langugae_content">Would you like to proceed changing current language?</string>
     <string name="yes">Yes</string>
