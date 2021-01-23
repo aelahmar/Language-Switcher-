@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="change_app_langugae">Change App Language</string>
-    <string name="change_langugae_content">Would you like to proceed changing current language?</string>
-    <string name="yes">Yes</string>
-    <string name="cancel">Cancel</string>
+    <string name="change_app_langugae">تغيير لغة التطبيق</string>
+    <string name="change_langugae_content">هل تود الاستمرار في تغيير لغة التطبيق الحالية؟</string>
+    <string name="yes">نعم</string>
+    <string name="cancel">إنهاء</string>
 </resources>
