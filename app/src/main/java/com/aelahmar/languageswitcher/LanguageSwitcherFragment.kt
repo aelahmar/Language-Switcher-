@@ -32,7 +32,13 @@ class LanguageSwitcherFragment : Fragment() {
 
         fun getSelectedLanguage(context: Context): String {
             PreferenceUtil(context).apply {
-                return getStringValue(SELECTED_LANGUAGE_KEY, languagesList[0].stringLanguageCode)
+                val language = if (languagesList.isEmpty()) {
+                    "ar"
+                } else {
+                    languagesList[0].stringLanguageCode
+                }
+
+                return getStringValue(SELECTED_LANGUAGE_KEY, language)
             }
         }
     }
