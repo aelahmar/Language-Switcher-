@@ -69,20 +69,27 @@ class LanguageSwitcherFragment : Fragment() {
     private fun initUi() {
         val language = languagesList.first { it.stringLanguageCode == getSelectedLanguage(requireContext()) }
 
-        language.drawableRes?.let {
-            binding.selectedLanguageIcon.setImageResource(language.drawableRes)
+        val index = languagesList.indexOf(language)
+        val viewLanguage = if (index == 0) {
+            languagesList[index + 1]
+        } else {
+            languagesList[index - 1]
         }
 
-        language.stringRes?.let {
+        viewLanguage.drawableRes?.let {
+            binding.selectedLanguageIcon.setImageResource(viewLanguage.drawableRes)
+        }
+
+        viewLanguage.stringRes?.let {
             binding.selectedLanguageString.text = getString(it)
         }
 
-        if (language.drawableRes == null && language.stringRes == null) {
+        if (viewLanguage.drawableRes == null && viewLanguage.stringRes == null) {
             throw IllegalArgumentException("Language require drawableRes or stringRes")
         }
 
         binding.selectedLanguageIcon.setOnClickListener {
-            showAlertDialogButtonClicked(language)
+            showAlertDialogButtonClicked(index)
         }
     }
 
@@ -92,14 +99,14 @@ class LanguageSwitcherFragment : Fragment() {
         activity?.finish()
     }
 
-    private fun showAlertDialogButtonClicked(language: Language) {
+    private fun showAlertDialogButtonClicked(index: Int) {
 
         val builder: AlertDialog.Builder = AlertDialog.Builder(requireContext())
         builder.setTitle(getString(R.string.change_app_langugae))
         builder.setMessage(getString(R.string.change_langugae_content))
 
         builder.setPositiveButton(getString(R.string.yes)) { p0, p1 ->
-            val index = languagesList.indexOf(language)
+
             val selectedLanguage = if (index == 0) {
                 languagesList[index + 1].stringLanguageCode
             } else {
