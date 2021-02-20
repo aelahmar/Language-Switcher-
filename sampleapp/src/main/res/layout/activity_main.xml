@@ -31,4 +31,16 @@
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/list_language_switcher" />
+
+    <FrameLayout
+        android:id="@+id/list_language_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp" />
+
 </LinearLayout>

@@ -1,6 +1,7 @@
 package com.aelahmar.languageswitcher
 
 import android.content.Context
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.aelahmar.languageswitcher.databinding.FragmentLanguageSwitcherBinding
 import java.io.Serializable
 
@@ -20,6 +22,7 @@ class LanguageSwitcherFragment : Fragment() {
     companion object {
         private const val SELECTED_LANGUAGE_KEY = "UserLanguageKey"
         private const val LANGUAGES_KEY = "LanguagesKey"
+        private const val LIST_KEY = "ListKey"
 
         private var languagesList: MutableList<Language> = mutableListOf()
 
@@ -27,6 +30,14 @@ class LanguageSwitcherFragment : Fragment() {
             LanguageSwitcherFragment().apply {
                 val bundle = Bundle()
                 bundle.putSerializable(LANGUAGES_KEY, languages as Serializable)
+                arguments = bundle
+            }
+
+        fun initListLanguageSwitcher(languages: MutableList<Language>) =
+            LanguageSwitcherFragment().apply {
+                val bundle = Bundle()
+                bundle.putSerializable(LANGUAGES_KEY, languages as Serializable)
+                bundle.putBoolean(LIST_KEY, true)
                 arguments = bundle
             }
 
@@ -54,19 +65,45 @@ class LanguageSwitcherFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        var isList = false
+
         arguments?.let {
             if (it.containsKey(LANGUAGES_KEY))
                 languagesList = it.getSerializable(LANGUAGES_KEY) as MutableList<Language>
+
+            if (it.containsKey(LIST_KEY))
+                isList = it.getBoolean(LIST_KEY)
         }
 
         if (languagesList.isEmpty() || languagesList.size > 2) {
             throw IllegalArgumentException("LanguageSwitcher require not empty Languages List and support only 2 languages now :'( ")
         }
 
-        initUi()
+        if (isList)
+            initListUi()
+        else
+            initIconTextUi()
     }
 
-    private fun initUi() {
+    private fun initListUi() {
+        val adapter =
+            LanguagesAdapter(languagesList, object : LanguagesAdapter.LanguagesAdapterCallback {
+                override fun onLanguageSelected(position: Int, language: Language) {
+                    showAlertDialogButtonClicked { _, _ ->
+                        setSelectedLanguage(requireContext(), language.stringLanguageCode)
+
+                        restartActivity()
+                    }
+
+                }
+            })
+
+        val linearLayoutManager = LinearLayoutManager(requireContext())
+        binding.languagesRecyclerView.layoutManager = linearLayoutManager
+        binding.languagesRecyclerView.adapter = adapter
+    }
+
+    private fun initIconTextUi() {
         val language =
             languagesList.first { it.stringLanguageCode == getSelectedLanguage(requireContext()) }
 
@@ -89,8 +126,22 @@ class LanguageSwitcherFragment : Fragment() {
             throw IllegalArgumentException("Language require drawableRes or stringRes")
         }
 
+        if (viewLanguage.drawableRes != null && viewLanguage.stringRes != null) {
+            binding.selectedLanguageString.visibility = View.INVISIBLE
+        }
+
         binding.languageSwitcherContent.setOnClickListener {
-            showAlertDialogButtonClicked(index)
+            showAlertDialogButtonClicked { _, _ ->
+                val selectedLanguage = if (index == 0) {
+                    languagesList[index + 1].stringLanguageCode
+                } else {
+                    languagesList[index - 1].stringLanguageCode
+                }
+
+                setSelectedLanguage(requireContext(), selectedLanguage)
+
+                restartActivity()
+            }
         }
     }
 
@@ -100,24 +151,13 @@ class LanguageSwitcherFragment : Fragment() {
         activity?.startActivity(intent)
     }
 
-    private fun showAlertDialogButtonClicked(index: Int) {
+    private fun showAlertDialogButtonClicked(listener: DialogInterface.OnClickListener) {
 
         val builder: AlertDialog.Builder = AlertDialog.Builder(requireContext())
         builder.setTitle(getString(R.string.change_app_langugae))
         builder.setMessage(getString(R.string.change_langugae_content))
 
-        builder.setPositiveButton(getString(R.string.yes)) { p0, p1 ->
-
-            val selectedLanguage = if (index == 0) {
-                languagesList[index + 1].stringLanguageCode
-            } else {
-                languagesList[index - 1].stringLanguageCode
-            }
-
-            setSelectedLanguage(requireContext(), selectedLanguage)
-
-            restartActivity()
-        }
+        builder.setPositiveButton(getString(R.string.yes), listener)
 
         builder.setNegativeButton(getString(R.string.cancel), null)
 
