@@ -95,8 +95,8 @@ class LanguageSwitcherFragment : Fragment() {
 
     private fun restartActivity() {
         val intent = activity?.intent
-        activity?.startActivity(intent)
         activity?.finish()
+        activity?.startActivity(intent)
     }
 
     private fun showAlertDialogButtonClicked(index: Int) {
