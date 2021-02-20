@@ -24,11 +24,11 @@ class LanguageSwitcherFragment : Fragment() {
         private var languagesList: MutableList<Language> = mutableListOf()
 
         fun initArEnLanguageSwitcher(languages: MutableList<Language>) =
-                LanguageSwitcherFragment().apply {
-                    val bundle = Bundle()
-                    bundle.putSerializable(LANGUAGES_KEY, languages as Serializable)
-                    arguments = bundle
-                }
+            LanguageSwitcherFragment().apply {
+                val bundle = Bundle()
+                bundle.putSerializable(LANGUAGES_KEY, languages as Serializable)
+                arguments = bundle
+            }
 
         fun getSelectedLanguage(context: Context): String {
             PreferenceUtil(context).apply {
@@ -44,7 +44,7 @@ class LanguageSwitcherFragment : Fragment() {
     }
 
     override fun onCreateView(
-            inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         inflater.inflate(R.layout.fragment_language_switcher, container, false)
         _binding = FragmentLanguageSwitcherBinding.inflate(inflater, container, false)
@@ -67,7 +67,8 @@ class LanguageSwitcherFragment : Fragment() {
     }
 
     private fun initUi() {
-        val language = languagesList.first { it.stringLanguageCode == getSelectedLanguage(requireContext()) }
+        val language =
+            languagesList.first { it.stringLanguageCode == getSelectedLanguage(requireContext()) }
 
         val index = languagesList.indexOf(language)
         val viewLanguage = if (index == 0) {
@@ -88,7 +89,7 @@ class LanguageSwitcherFragment : Fragment() {
             throw IllegalArgumentException("Language require drawableRes or stringRes")
         }
 
-        binding.selectedLanguageIcon.setOnClickListener {
+        binding.languageSwitcherContent.setOnClickListener {
             showAlertDialogButtonClicked(index)
         }
     }
@@ -131,8 +132,8 @@ class LanguageSwitcherFragment : Fragment() {
     }
 
     data class Language(
-            @StringRes val stringRes: Int? = null,
-            @DrawableRes val drawableRes: Int? = null,
-            val stringLanguageCode: String
+        @StringRes val stringRes: Int? = null,
+        @DrawableRes val drawableRes: Int? = null,
+        val stringLanguageCode: String
     ) : Serializable
 }

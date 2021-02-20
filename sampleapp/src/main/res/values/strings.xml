@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Sample App</string>
+    <string name="icons_language_switcher">Icons Language Switcher</string>
+    <string name="text_language_switcher">Text Language Switcher</string>
+    <string name="arabic">العربية</string>
+    <string name="english">English</string>
 </resources>
