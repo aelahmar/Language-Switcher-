@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">مثال مكتبة تغيير اللغة</string>
     <string name="icons_language_switcher">أيقونة تغيير اللغة</string>
     <string name="text_language_switcher">نص تغيير اللغة</string>
     <string name="list_language_switcher">قائمة تغيير اللغة</string>

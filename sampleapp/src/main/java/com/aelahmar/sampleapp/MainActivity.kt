@@ -17,6 +17,8 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(binding.root)
 
+        supportActionBar?.title = getString(R.string.app_name)
+
         initIconLanguages()
         initTextLanguages()
         initListLanguages()

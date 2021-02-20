@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">Language Switcher</string>
     <string name="change_app_langugae">تغيير لغة التطبيق</string>
     <string name="change_langugae_content">هل تود الاستمرار في تغيير لغة التطبيق الحالية؟</string>
     <string name="yes">نعم</string>
