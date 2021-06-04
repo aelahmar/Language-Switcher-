@@ -9,4 +9,6 @@
     <color name="white">#FFFFFFFF</color>
     <color name="blue">#0070B9</color>
     <color name="gray">#989898</color>
+
+    <color name="ls_selected_language_color">#FFFFFFFF</color>
 </resources>

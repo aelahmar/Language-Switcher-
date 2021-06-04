@@ -15,6 +15,7 @@
         android:id="@+id/selected_language_string"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="@color/ls_selected_language_color"
         android:padding="5dp" />
 
     <androidx.recyclerview.widget.RecyclerView
