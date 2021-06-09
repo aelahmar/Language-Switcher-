@@ -10,17 +10,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
-        android:visibility="gone"
         android:adjustViewBounds="true"
-        android:maxWidth="30dp" />
+        android:maxWidth="30dp"
+        android:visibility="gone" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/item_language_string"
         android:layout_width="0dp"
-        android:textAlignment="viewStart"
         android:layout_height="wrap_content"
+        android:layout_gravity="start"
         android:layout_weight="1"
-        android:visibility="gone"
-        android:padding="5dp" />
+        android:padding="5dp"
+        android:textAlignment="viewStart"
+        android:visibility="gone" />
 
 </LinearLayout>

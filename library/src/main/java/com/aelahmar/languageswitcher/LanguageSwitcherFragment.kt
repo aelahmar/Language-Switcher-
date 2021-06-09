@@ -6,9 +6,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.aelahmar.languageswitcher.databinding.FragmentLanguageSwitcherBinding
@@ -130,6 +132,13 @@ class LanguageSwitcherFragment : Fragment() {
             binding.selectedLanguageString.visibility = View.INVISIBLE
         }
 
+        binding.selectedLanguageString.setTextColor(
+            ContextCompat.getColor(
+                requireContext(),
+                viewLanguage.selectedLanguageColorRes
+            )
+        )
+
         binding.languageSwitcherContent.setOnClickListener {
             showAlertDialogButtonClicked { _, _ ->
                 val selectedLanguage = if (index == 0) {
@@ -174,6 +183,7 @@ class LanguageSwitcherFragment : Fragment() {
     data class Language(
         @StringRes val stringRes: Int? = null,
         @DrawableRes val drawableRes: Int? = null,
+        @ColorRes val selectedLanguageColorRes: Int = R.color.ls_selected_language_color,
         val stringLanguageCode: String
     ) : Serializable
 }

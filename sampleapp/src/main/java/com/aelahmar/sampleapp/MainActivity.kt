@@ -59,14 +59,16 @@ class MainActivity : AppCompatActivity() {
         languages.add(
             LanguageSwitcherFragment.Language(
                 stringRes = R.string.arabic,
-                stringLanguageCode = "ar"
+                stringLanguageCode = "ar",
+                selectedLanguageColorRes = R.color.purple_200
             )
         )
 
         languages.add(
             LanguageSwitcherFragment.Language(
                 stringRes = R.string.english,
-                stringLanguageCode = "en"
+                stringLanguageCode = "en",
+                selectedLanguageColorRes = R.color.purple_200
             )
         )
 
