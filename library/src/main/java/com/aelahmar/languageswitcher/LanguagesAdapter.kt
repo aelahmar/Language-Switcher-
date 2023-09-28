@@ -31,9 +31,19 @@ internal class LanguagesAdapter(
         language.stringRes?.let {
 
             if (selectedLanguage == language.stringLanguageCode)
-                holder.title.setTextColor(ContextCompat.getColor(context, R.color.ls_blue))
+                holder.title.setTextColor(
+                    ContextCompat.getColor(
+                        context,
+                        R.color.ls_selected_language_color
+                    )
+                )
             else
-                holder.title.setTextColor(ContextCompat.getColor(context, R.color.ls_gray))
+                holder.title.setTextColor(
+                    ContextCompat.getColor(
+                        context,
+                        R.color.ls_language_color
+                    )
+                )
 
             holder.title.setText(language.stringRes)
             holder.title.visibility = View.VISIBLE

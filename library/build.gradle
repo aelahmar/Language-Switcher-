@@ -39,6 +39,20 @@ android {
     namespace 'com.aelahmar.languageswitcher'
 }
 
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components["release"]
+
+                groupId 'com.aelahmar.languageswitcher'
+                artifactId 'languageswitcher'
+                version '1.0.1'
+            }
+        }
+    }
+}
+
 dependencies {
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
