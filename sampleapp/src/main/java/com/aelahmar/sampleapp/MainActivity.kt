@@ -33,24 +33,20 @@ class MainActivity : AppCompatActivity() {
 
         languages.add(
             LanguageSwitcherFragment.Language(
-                drawableRes = R.drawable.ic_sa,
-                stringLanguageCode = "ar"
+                drawableRes = R.drawable.ic_sa, stringLanguageCode = "ar"
             )
         )
 
         languages.add(
             LanguageSwitcherFragment.Language(
-                drawableRes = R.drawable.ic_gb,
-                stringLanguageCode = "en"
+                drawableRes = R.drawable.ic_gb, stringLanguageCode = "en"
             )
         )
 
-        val fragment = LanguageSwitcherFragment.initArEnLanguageSwitcher(languages)
+        val fragment = LanguageSwitcherFragment.initArEnLanguageSwitcher(ArrayList(languages))
 
-        supportFragmentManager
-            .beginTransaction()
-            .replace(R.id.icons_language_layout, fragment, "fragmentIconTag")
-            .commit()
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.icons_language_layout, fragment, "fragmentIconTag").commit()
     }
 
     private fun initTextLanguages() {
@@ -72,12 +68,10 @@ class MainActivity : AppCompatActivity() {
             )
         )
 
-        val fragment = LanguageSwitcherFragment.initArEnLanguageSwitcher(languages)
+        val fragment = LanguageSwitcherFragment.initArEnLanguageSwitcher(ArrayList(languages))
 
-        supportFragmentManager
-            .beginTransaction()
-            .replace(R.id.text_language_layout, fragment, "fragmentIconTag")
-            .commit()
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.text_language_layout, fragment, "fragmentIconTag").commit()
     }
 
     private fun initListLanguages() {
@@ -99,11 +93,9 @@ class MainActivity : AppCompatActivity() {
             )
         )
 
-        val fragment = LanguageSwitcherFragment.initListLanguageSwitcher(languages)
+        val fragment = LanguageSwitcherFragment.initListLanguageSwitcher(ArrayList(languages))
 
-        supportFragmentManager
-            .beginTransaction()
-            .replace(R.id.list_language_layout, fragment, "fragmentIconTag")
-            .commit()
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.list_language_layout, fragment, "fragmentIconTag").commit()
     }
 }

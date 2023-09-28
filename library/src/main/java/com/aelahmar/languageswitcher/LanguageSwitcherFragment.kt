@@ -19,47 +19,39 @@ import java.io.Serializable
 class LanguageSwitcherFragment : Fragment() {
 
     private var _binding: FragmentLanguageSwitcherBinding? = null
-    private val binding get() = _binding!!
+    private val binding get() = _binding ?: throw IllegalStateException("Binding not initialized")
+
+    private val languagesKey = "LanguagesKey"
+    private val listKey = "ListKey"
+
+    private var languagesList: ArrayList<Language> = arrayListOf()
 
     companion object {
-        private const val SELECTED_LANGUAGE_KEY = "UserLanguageKey"
-        private const val LANGUAGES_KEY = "LanguagesKey"
-        private const val LIST_KEY = "ListKey"
+        private const val selectedLanguageKey = "UserLanguageKey"
 
-        private var languagesList: MutableList<Language> = mutableListOf()
-
-        fun initArEnLanguageSwitcher(languages: MutableList<Language>) =
+        fun initArEnLanguageSwitcher(languages: ArrayList<Language>) =
             LanguageSwitcherFragment().apply {
                 val bundle = Bundle()
-                bundle.putSerializable(LANGUAGES_KEY, languages as Serializable)
+                bundle.putSerializable(languagesKey, languages)
                 arguments = bundle
             }
 
-        fun initListLanguageSwitcher(languages: MutableList<Language>) =
+        fun initListLanguageSwitcher(languages: ArrayList<Language>) =
             LanguageSwitcherFragment().apply {
                 val bundle = Bundle()
-                bundle.putSerializable(LANGUAGES_KEY, languages as Serializable)
-                bundle.putBoolean(LIST_KEY, true)
+                bundle.putSerializable(languagesKey, languages)
+                bundle.putBoolean(listKey, true)
                 arguments = bundle
             }
 
-        fun getSelectedLanguage(context: Context): String {
-            PreferenceUtil(context).apply {
-                val language = if (languagesList.isEmpty()) {
-                    "ar"
-                } else {
-                    languagesList[0].stringLanguageCode
-                }
-
-                return getStringValue(SELECTED_LANGUAGE_KEY, language)
-            }
+        fun getSelectedLanguage(context: Context, defaultLanguage: String): String {
+            return PreferenceUtil(context).getStringValue(selectedLanguageKey, defaultLanguage)
         }
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-        inflater.inflate(R.layout.fragment_language_switcher, container, false)
         _binding = FragmentLanguageSwitcherBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -67,24 +59,20 @@ class LanguageSwitcherFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        var isList = false
-
         arguments?.let {
-            if (it.containsKey(LANGUAGES_KEY))
-                languagesList = it.getSerializable(LANGUAGES_KEY) as MutableList<Language>
+            languagesList = it.getCompatSerializable(languagesKey) ?: arrayListOf()
+            val isList = it.getBoolean(listKey, false)
 
-            if (it.containsKey(LIST_KEY))
-                isList = it.getBoolean(LIST_KEY)
+            validateLanguagesList()
+
+            if (isList) initListUi() else initIconTextUi()
         }
+    }
 
+    private fun validateLanguagesList() {
         if (languagesList.isEmpty() || languagesList.size > 2) {
-            throw IllegalArgumentException("LanguageSwitcher require not empty Languages List and support only 2 languages now :'( ")
+            throw IllegalArgumentException("LanguageSwitcher requires a non-empty Languages List and supports only 2 languages currently.")
         }
-
-        if (isList)
-            initListUi()
-        else
-            initIconTextUi()
     }
 
     private fun initListUi() {
@@ -93,10 +81,8 @@ class LanguageSwitcherFragment : Fragment() {
                 override fun onLanguageSelected(position: Int, language: Language) {
                     showAlertDialogButtonClicked { _, _ ->
                         setSelectedLanguage(requireContext(), language.stringLanguageCode)
-
                         restartActivity()
                     }
-
                 }
             })
 
@@ -106,18 +92,22 @@ class LanguageSwitcherFragment : Fragment() {
     }
 
     private fun initIconTextUi() {
-        val language =
-            languagesList.first { it.stringLanguageCode == getSelectedLanguage(requireContext()) }
+        val language = languagesList.first { language ->
+            language.stringLanguageCode == getSelectedLanguage(
+                requireContext(),
+                languagesList[0].stringLanguageCode,
+            )
+        }
 
         val index = languagesList.indexOf(language)
         val viewLanguage = if (index == 0) {
-            languagesList[index + 1]
+            languagesList[1]
         } else {
             languagesList[index - 1]
         }
 
         viewLanguage.drawableRes?.let {
-            binding.selectedLanguageIcon.setImageResource(viewLanguage.drawableRes)
+            binding.selectedLanguageIcon.setImageResource(it)
         }
 
         viewLanguage.stringRes?.let {
@@ -125,7 +115,7 @@ class LanguageSwitcherFragment : Fragment() {
         }
 
         if (viewLanguage.drawableRes == null && viewLanguage.stringRes == null) {
-            throw IllegalArgumentException("Language require drawableRes or stringRes")
+            throw IllegalArgumentException("Language requires drawableRes or stringRes")
         }
 
         if (viewLanguage.drawableRes != null && viewLanguage.stringRes != null) {
@@ -134,21 +124,19 @@ class LanguageSwitcherFragment : Fragment() {
 
         binding.selectedLanguageString.setTextColor(
             ContextCompat.getColor(
-                requireContext(),
-                viewLanguage.selectedLanguageColorRes
+                requireContext(), viewLanguage.selectedLanguageColorRes
             )
         )
 
         binding.languageSwitcherContent.setOnClickListener {
             showAlertDialogButtonClicked { _, _ ->
                 val selectedLanguage = if (index == 0) {
-                    languagesList[index + 1].stringLanguageCode
+                    languagesList[1].stringLanguageCode
                 } else {
                     languagesList[index - 1].stringLanguageCode
                 }
 
                 setSelectedLanguage(requireContext(), selectedLanguage)
-
                 restartActivity()
             }
         }
@@ -161,13 +149,11 @@ class LanguageSwitcherFragment : Fragment() {
     }
 
     private fun showAlertDialogButtonClicked(listener: DialogInterface.OnClickListener) {
-
         val builder: AlertDialog.Builder = AlertDialog.Builder(requireContext())
         builder.setTitle(getString(R.string.change_app_langugae))
         builder.setMessage(getString(R.string.change_langugae_content))
 
         builder.setPositiveButton(getString(R.string.yes), listener)
-
         builder.setNegativeButton(getString(R.string.cancel), null)
 
         val dialog: AlertDialog = builder.create()
@@ -175,9 +161,7 @@ class LanguageSwitcherFragment : Fragment() {
     }
 
     private fun setSelectedLanguage(context: Context, language: String) {
-        PreferenceUtil(context).apply {
-            setStringValue(SELECTED_LANGUAGE_KEY, language)
-        }
+        PreferenceUtil(context).setStringValue(selectedLanguageKey, language)
     }
 
     data class Language(

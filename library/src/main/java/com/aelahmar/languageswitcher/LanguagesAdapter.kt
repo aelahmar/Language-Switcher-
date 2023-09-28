@@ -26,14 +26,14 @@ internal class LanguagesAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val language = languages[position]
-        val selectedLanguage = getSelectedLanguage(context)
+        val selectedLanguage = getSelectedLanguage(context, "")
 
         language.stringRes?.let {
 
             if (selectedLanguage == language.stringLanguageCode)
-                holder.title.setTextColor(ContextCompat.getColor(context, R.color.blue))
+                holder.title.setTextColor(ContextCompat.getColor(context, R.color.ls_blue))
             else
-                holder.title.setTextColor(ContextCompat.getColor(context, R.color.gray))
+                holder.title.setTextColor(ContextCompat.getColor(context, R.color.ls_gray))
 
             holder.title.setText(language.stringRes)
             holder.title.visibility = View.VISIBLE
